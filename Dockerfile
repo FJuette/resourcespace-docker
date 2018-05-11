@@ -2,7 +2,6 @@ FROM ubuntu:18.04
 LABEL maintainer="Fabian Juette <fabian.juette@tu-clausthal.de>"
 
 ENV DEBIAN_FRONTEND noninteractive
-ENV BASEURL "http://localhost"
 
 # Install basic system
 RUN apt-get update && apt-get install -y \
@@ -18,11 +17,8 @@ php7.2-ldap \
 php-mbstring \
 php-zip \
 libapache2-mod-php \
-subversion
-RUN apt-get install -y \
-nano \
-imagemagick
-RUN apt-get install -y \
+subversion \
+imagemagick \
 ghostscript \
 antiword \
 xpdf \
@@ -33,9 +29,8 @@ cron \
 wget \
 mysql-client
 
-# Configure apache2
+# Configure apache
 ADD rs-config.conf /etc/apache2/sites-available/000-default.conf
-#RUN sed -i -e "s#DocumentRoot /var/www/html#DocumentRoot /var/www/resourcespace#g" /etc/apache2/sites-available/000-default.conf
 
 # Configure php.ini
 RUN cp -a /etc/php/7.2/apache2/php.ini /etc/php/7.2/apache2/php.ini-original
@@ -53,11 +48,12 @@ RUN mkdir resourcespace \
 && chmod 777 filestore \
 && chmod -R 777 include
 
-ADD rs.sh /sbin
-RUN chmod a+x /sbin/rs.sh
+# Set cron job
+ADD resourcespace /etc/cron.daily/resourcespace
 
-#TODO Add Cron Job from rs documentation
+ADD init.sh /sbin
+RUN chmod a+x /sbin/init.sh
 
 # Entrypoint
-CMD ["/sbin/rs.sh"]
+CMD ["/sbin/init.sh"]
 EXPOSE 80
