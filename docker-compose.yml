@@ -3,7 +3,7 @@ services:
   db:
     image: mysql:5.6
     volumes:
-      - db_data:/var/lib/mysql
+      - ./db_data:/var/lib/mysql
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: resourcespace
@@ -18,8 +18,7 @@ services:
     depends_on:
        - db
     volumes:
-      - filestore:/var/www/resourcespace/filestore
-      - include:/var/www/resourcespace/include    
+      - filestore:/var/www/resourcespace/filestore  
     ports:
       - "4000:80"
     restart: always
@@ -30,6 +29,4 @@ services:
 networks:
   rsnet:
 volumes:
-    db_data:
     filestore:
-    include:

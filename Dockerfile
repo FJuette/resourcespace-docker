@@ -43,7 +43,7 @@ RUN sed -i -e "s/memory_limit\s*=\s*128M/memory_limit = 1G/g" /etc/php/7.2/apach
 WORKDIR /var/www
 RUN mkdir resourcespace \
 && cd resourcespace \
-&& svn co https://svn.resourcespace.com/svn/rs/releases/8.4 . \
+&& svn co https://svn.resourcespace.com/svn/rs/releases/8.5 . \
 && mkdir filestore \
 && chmod 777 filestore \
 && chmod -R 777 include
