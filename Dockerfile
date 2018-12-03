@@ -1,7 +1,10 @@
-FROM ubuntu:18.04
+FROM phusion/baseimage:0.11
 LABEL maintainer="Fabian Juette <fabian.juette@tu-clausthal.de>"
 
 ENV DEBIAN_FRONTEND noninteractive
+
+
+EXPOSE 80
 
 # Install basic system
 RUN apt-get update && apt-get install -y \
@@ -43,7 +46,7 @@ RUN sed -i -e "s/memory_limit\s*=\s*128M/memory_limit = 1G/g" /etc/php/7.2/apach
 WORKDIR /var/www
 RUN mkdir resourcespace \
 && cd resourcespace \
-&& svn co https://svn.resourcespace.com/svn/rs/releases/8.5 . \
+&& svn co https://svn.resourcespace.com/svn/rs/releases/8.6 . \
 && mkdir filestore \
 && chmod 777 filestore \
 && chmod -R 777 include
@@ -51,9 +54,11 @@ RUN mkdir resourcespace \
 # Set cron job
 ADD resourcespace /etc/cron.daily/resourcespace
 
-ADD init.sh /sbin
-RUN chmod a+x /sbin/init.sh
+ADD init.sh /etc/service/apache2/run
+RUN chmod a+x /etc/service/apache2/run
 
-# Entrypoint
-CMD ["/sbin/init.sh"]
-EXPOSE 80
+# Use baseimage-docker's init system.
+CMD ["/sbin/my_init"]
+
+# Clean up APT when done.
+RUN apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*

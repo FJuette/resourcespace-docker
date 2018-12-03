@@ -20,10 +20,10 @@ services:
     volumes:
       - filestore:/var/www/resourcespace/filestore  
     ports:
-      - "4000:80"
+      - "4001:80"
     restart: always
     environment:
-      BASEURL: "http://localhost:4000"
+      BASEURL: "http://localhost:4001"
     networks:
       - rsnet
 networks:
